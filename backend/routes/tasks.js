@@ -51,4 +51,16 @@ router.patch("/", (req, res) => {
   }
 });
 
+router.delete("/", (req, res) => {
+  Task.findOneAndDelete({
+    _id: req.query._id,
+  })
+    .then((task) => {
+      return res.status(200).json(task);
+    })
+    .catch((error) => {
+      return res.status(400).send(error);
+    });
+});
+
 module.exports = router;
