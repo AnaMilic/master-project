@@ -81,73 +81,97 @@ const AddNewModal = forwardRef(
       <AddModalElement open id="addModal" ref={ref}>
         <ModalTitle>Create new task</ModalTitle>
         <CloseAddModal onClick={onClose}>X</CloseAddModal>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="title">Title: </label>
-          <FormInput
-            type="text"
-            name="title"
-            required
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          ></FormInput>
-          <br />
-          <label htmlFor="description">Description: </label>
-          <FormTextArea
-            name="description"
-            required
-            rows={4}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          ></FormTextArea>
-          <br />
-          <label htmlFor="taskType">Type: </label>
-          <FormSelect2
-            name="taskType"
-            onChange={(event) => setTaskType(event.target.value)}
-          >
-            <FormOption value="new feature">New feature</FormOption>
-            <FormOption value="change">Change</FormOption>
-            <FormOption value="bug">Bug</FormOption>
-            <FormOption value="other">Other</FormOption>
-          </FormSelect2>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <FlexColumn>
+            <label htmlFor="title">Title: </label>
+            <FormInput
+              type="text"
+              name="title"
+              required
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            ></FormInput>
+          </FlexColumn>
 
-          <label htmlFor="priority">Priority: </label>
-          <FormSelect3
-            name="priority"
-            onChange={(event) => setPriority(event.target.value)}
+          <FlexColumn>
+            <label htmlFor="description">Description: </label>
+            <FormTextArea
+              name="description"
+              required
+              rows={4}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            ></FormTextArea>
+          </FlexColumn>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
           >
-            <FormOption value="1">1</FormOption>
-            <FormOption value="2">2</FormOption>
-            <FormOption value="3">3</FormOption>
-            <FormOption value="4">4</FormOption>
-            <FormOption value="5">5</FormOption>
-          </FormSelect3>
-          <br />
-          <label htmlFor="developer">Developer: </label>
-          <FormSelect
-            name="developer"
-            onChange={(event) => setUserDeveloper(event.target.value)}
-          >
-            {users.map(({ username, _id }) => (
-              <FormOption value={username} key={_id}>
-                {username}
-              </FormOption>
-            ))}
-          </FormSelect>
-          <br />
-          <label htmlFor="tester">Tester: </label>
-          <FormSelect
-            name="tester"
-            value={userTester}
-            onChange={(event) => setUserTester(event.target.value)}
-          >
-            {users.map(({ username, _id }) => (
-              <FormOption value={username} key={_id}>
-                {username}
-              </FormOption>
-            ))}
-          </FormSelect>
-          <br />
+            <FlexColumn>
+              <label htmlFor="taskType">Type: </label>
+              <FormSelect
+                name="taskType"
+                onChange={(event) => setTaskType(event.target.value)}
+              >
+                <FormOption value="new feature">New feature</FormOption>
+                <FormOption value="change">Change</FormOption>
+                <FormOption value="bug">Bug</FormOption>
+                <FormOption value="other">Other</FormOption>
+              </FormSelect>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="priority">Priority: </label>
+              <FormSelect
+                name="priority"
+                onChange={(event) => setPriority(event.target.value)}
+              >
+                <FormOption value="1">1</FormOption>
+                <FormOption value="2">2</FormOption>
+                <FormOption value="3">3</FormOption>
+                <FormOption value="4">4</FormOption>
+                <FormOption value="5">5</FormOption>
+              </FormSelect>
+            </FlexColumn>
+          </div>
+          <div>
+            <label htmlFor="developer">Developer: </label>
+            <FormSelect
+              name="developer"
+              onChange={(event) => setUserDeveloper(event.target.value)}
+            >
+              {users.map(({ username, _id }) => (
+                <FormOption value={username} key={_id}>
+                  {username}
+                </FormOption>
+              ))}
+            </FormSelect>
+          </div>
+
+          <div>
+            <label htmlFor="tester">Tester: </label>
+            <FormSelect
+              name="tester"
+              value={userTester}
+              onChange={(event) => setUserTester(event.target.value)}
+            >
+              {users.map(({ username, _id }) => (
+                <FormOption value={username} key={_id}>
+                  {username}
+                </FormOption>
+              ))}
+            </FormSelect>
+          </div>
+
           <AddNewTaskFormButton>Add task</AddNewTaskFormButton>
         </form>
       </AddModalElement>
@@ -159,12 +183,12 @@ export default AddNewModal;
 
 const AddModalElement = styled.dialog`
   background-color: antiquewhite;
-  height: 40vh;
   width: 30vw;
   top: 25%;
   border: 1px solid grey;
   border-radius: 10px;
   position: fixed;
+  z-index: 1;
 `;
 const CloseAddModal = styled.button`
   background: none;
@@ -177,7 +201,6 @@ const CloseAddModal = styled.button`
   }
 `;
 const ModalTitle = styled.h3`
-  color: #474747;
   margin-top: 2px;
   text-align: center;
   font-style: italic;
@@ -185,20 +208,16 @@ const ModalTitle = styled.h3`
   text-shadow: 1px 2px 3px #504e4e;
 `;
 const FormInput = styled.input`
-  width: 100%;
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
 `;
 const FormTextArea = styled.textarea`
   resize: none;
   scrollbar-width: none;
-  width: 100%;
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
 `;
 const FormSelect = styled.select`
   width: 100%;
@@ -206,32 +225,18 @@ const FormSelect = styled.select`
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
-`;
-const FormSelect2 = styled.select`
-  width: 45%;
-  text-align: start;
-  border: none;
-  border-bottom: 1px solid grey;
-  background: none;
-  margin-bottom: 10px;
-`;
-const FormSelect3 = styled.select`
-  width: 30%;
-  text-align: start;
-  border: none;
-  border-bottom: 1px solid grey;
-  background: none;
-  margin-bottom: 10px;
 `;
 const FormOption = styled.option`
   background: #fffaf4;
 `;
 const AddNewTaskFormButton = styled.button`
-  margin-left: 40%;
-  padding: 10px;
   box-shadow: 2px 4px 7px #504e4e;
   &:hover {
     border: 2px solid #39d05c;
   }
+  align-self: center;
+`;
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

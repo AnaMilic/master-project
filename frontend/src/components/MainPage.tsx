@@ -270,8 +270,13 @@ function MainPage() {
       {isAddModalVisible && (
         <AddNewModal
           onAddTask={(task: Task) => {
-            setTodoTasks((oldState) => [...oldState, task]);
-            setIsAddModalVisible(false);
+            if (todoTasks.length < 3) {
+              setTodoTasks((oldState) => [...oldState, task]);
+              setIsAddModalVisible(false);
+            } else {
+              alert("Vise od 3 taska. ne moze novi");
+              return;
+            }
           }}
           onClose={() => setIsAddModalVisible(false)}
           ref={addModalRef}

@@ -92,7 +92,7 @@ const EditModal = forwardRef(
             gap: "10px",
           }}
         >
-          <div>
+          <FlexColumn>
             <label htmlFor="title">Title:</label>
             <FormInput
               type="text"
@@ -101,7 +101,7 @@ const EditModal = forwardRef(
               value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
-          </div>
+          </FlexColumn>
           <FlexColumn>
             <label htmlFor="description">Description: </label>
             <FormTextArea
@@ -121,7 +121,7 @@ const EditModal = forwardRef(
           >
             <FlexColumn>
               <label htmlFor="taskType">Type:</label>
-              <FormSelect2
+              <FormSelect
                 name="taskType"
                 value={taskType}
                 onChange={(event) => setTaskType(event.target.value)}
@@ -130,11 +130,11 @@ const EditModal = forwardRef(
                 <FormOption value="change">Change</FormOption>
                 <FormOption value="bug">Bug</FormOption>
                 <FormOption value="other">Other</FormOption>
-              </FormSelect2>
+              </FormSelect>
             </FlexColumn>
             <FlexColumn>
               <label htmlFor="priority">Priority:</label>
-              <FormSelect3
+              <FormSelect
                 name="priority"
                 value={priority}
                 onChange={(event) => setPriority(event.target.value)}
@@ -144,7 +144,7 @@ const EditModal = forwardRef(
                 <FormOption value="3">3</FormOption>
                 <FormOption value="4">4</FormOption>
                 <FormOption value="5">5</FormOption>
-              </FormSelect3>
+              </FormSelect>
             </FlexColumn>
           </div>
 
@@ -228,13 +228,11 @@ const CloseEditModal = styled.button`
   }
 `;
 const FormInput = styled.input`
-  width: 100%;
   border: none;
   border-bottom: 1px solid grey;
   background: none;
 `;
 const ModalTitle = styled.h3`
-  color: #474747;
   margin-top: 2px;
   text-align: center;
   font-style: italic;
@@ -250,18 +248,6 @@ const FormTextArea = styled.textarea`
 `;
 const FormSelect = styled.select`
   width: 100%;
-  text-align: start;
-  border: none;
-  border-bottom: 1px solid grey;
-  background: none;
-`;
-const FormSelect2 = styled.select`
-  text-align: start;
-  border: none;
-  border-bottom: 1px solid grey;
-  background: none;
-`;
-const FormSelect3 = styled.select`
   text-align: start;
   border: none;
   border-bottom: 1px solid grey;
