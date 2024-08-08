@@ -8,11 +8,9 @@ const EditModal = forwardRef(
   (
     {
       data,
-      setEditingTask,
       onClose,
     }: {
       data: Task;
-      setEditingTask: (param: Task | null) => void;
       onClose: () => void;
     },
     ref: React.ForwardedRef<HTMLDialogElement>
@@ -20,22 +18,22 @@ const EditModal = forwardRef(
     const [users, setUsers] = useState<User[]>([]);
     const [title, setTitle] = useState(data.title);
     const [description, setDescription] = useState(data.description);
-    //const [developer, setDeveloper]=useState(data.developer);
+    const [taskType, setTaskType] = useState(data.type);
+    const [priority, setPriority] = useState(data.priority);
+    const [userDeveloper, setUserDeveloper] = useState(data.userDeveloper);
+    const [userTester, setUserTester] = useState(data.userTester);
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
         .then((response) => response.json())
-        .then((data) => {
+        .then((data: User[]) => {
           setUsers(data);
-          console.log(data);
-          console.log(users);
         });
     }, []);
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
       event.stopPropagation();
       event.preventDefault();
-      console.log(event);
 
       return axios
         .patch("http://localhost:5050/api/tasks", {
@@ -43,61 +41,165 @@ const EditModal = forwardRef(
             ...data,
             title,
             description,
+            type: taskType,
+            priority,
+            userDeveloper,
+            userTester,
           },
         })
         .then((response) => {
           console.log(response.data);
           alert("Successful change of the task.");
         })
-        .catch((error) => alert(`Change of task failed. Error ${error}`))
-        .finally(() => setEditingTask(null));
+        .catch((error) => alert(`Change of task failed. Error ${error}`));
+    }
+
+    function replaceDeveloperAndTester(
+      event: React.MouseEvent<HTMLButtonElement>
+    ) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      return axios
+        .patch("http://localhost:5050/api/tasks", {
+          task: {
+            ...data,
+            title,
+            description,
+            type: taskType,
+            priority,
+            userDeveloper: userTester,
+            userTester: userDeveloper,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          alert("Successful replace of developer and tester.");
+        })
+        .catch((error) =>
+          alert(`Replace of developer and tester failed. Error ${error}`)
+        );
     }
 
     return (
       <EditModalElement open id="editModal" ref={ref}>
         <ModalTitle>Edit your task</ModalTitle>
         <CloseEditModal onClick={onClose}>X</CloseEditModal>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="title">Title: </label>
-          <FormInput
-            type="text"
-            name="title"
-            required
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          ></FormInput>
-          <br />
-          <label htmlFor="description">Description: </label>
-          <FormTextArea
-            name="description"
-            required
-            rows={4}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          ></FormTextArea>
-          <br />
-          <label htmlFor="developer">Developer: </label>
-          <FormSelect name="developer">
-            {/* <FormOption value="1">1</FormOption>
-            <FormOption value="2">2</FormOption>
-            <FormOption value="3">3</FormOption>*/}
-            {users.map(({ username, _id }) => (
-              <FormOption value={username} key={_id}>
-                {username}
-              </FormOption>
-            ))}
-          </FormSelect>
-          <br />
-          <label htmlFor="tester">Tester: </label>
-          <FormSelect name="tester">
-            {users.map(({ username, _id }) => (
-              <FormOption value={username} key={_id}>
-                {username}
-              </FormOption>
-            ))}
-          </FormSelect>
-          <br />
-          <EditFormButton>Save changes</EditFormButton>
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <div>
+            <label htmlFor="title">Title:</label>
+            <FormInput
+              type="text"
+              name="title"
+              required
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            />
+          </div>
+          <FlexColumn>
+            <label htmlFor="description">Description: </label>
+            <FormTextArea
+              name="description"
+              required
+              rows={4}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </FlexColumn>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <FlexColumn>
+              <label htmlFor="taskType">Type:</label>
+              <FormSelect2
+                name="taskType"
+                value={taskType}
+                onChange={(event) => setTaskType(event.target.value)}
+              >
+                <FormOption value="new feature">New feature</FormOption>
+                <FormOption value="change">Change</FormOption>
+                <FormOption value="bug">Bug</FormOption>
+                <FormOption value="other">Other</FormOption>
+              </FormSelect2>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="priority">Priority:</label>
+              <FormSelect3
+                name="priority"
+                value={priority}
+                onChange={(event) => setPriority(event.target.value)}
+              >
+                <FormOption value="1">1</FormOption>
+                <FormOption value="2">2</FormOption>
+                <FormOption value="3">3</FormOption>
+                <FormOption value="4">4</FormOption>
+                <FormOption value="5">5</FormOption>
+              </FormSelect3>
+            </FlexColumn>
+          </div>
+
+          <div>
+            <label htmlFor="developer">Developer: </label>
+            <FormSelect
+              name="developer"
+              value={userDeveloper._id}
+              onChange={(event) =>
+                setUserDeveloper(
+                  users.find((usr) => usr._id === event.target.value)!
+                )
+              }
+            >
+              {users.map(({ username, _id }) => (
+                <FormOption value={_id} key={_id}>
+                  {username}
+                </FormOption>
+              ))}
+            </FormSelect>
+          </div>
+          <div>
+            <label htmlFor="tester">Tester: </label>
+            <FormSelect
+              name="tester"
+              value={userTester._id}
+              onChange={(event) =>
+                setUserTester(
+                  users.find((usr) => usr._id === event.target.value)!
+                )
+              }
+            >
+              {users.map(({ username, _id }) => (
+                <FormOption value={_id} key={_id}>
+                  {username}
+                </FormOption>
+              ))}
+            </FormSelect>
+          </div>
+          <Buttons>
+            <ReplaceButton
+              onClick={(event) => {
+                replaceDeveloperAndTester(event);
+              }}
+            >
+              Replace developer and tester
+            </ReplaceButton>
+            <EditFormButton
+              onClick={(event) => {
+                handleSubmit(event);
+              }}
+            >
+              Save changes
+            </EditFormButton>
+          </Buttons>
         </form>
       </EditModalElement>
     );
@@ -108,7 +210,6 @@ export default EditModal;
 
 const EditModalElement = styled.dialog`
   background-color: antiquewhite;
-  height: 40vh;
   width: 30vw;
   top: 25%;
   border: 1px solid grey;
@@ -131,7 +232,6 @@ const FormInput = styled.input`
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
 `;
 const ModalTitle = styled.h3`
   color: #474747;
@@ -144,11 +244,9 @@ const ModalTitle = styled.h3`
 const FormTextArea = styled.textarea`
   resize: none;
   scrollbar-width: none;
-  width: 100%;
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
 `;
 const FormSelect = styled.select`
   width: 100%;
@@ -156,16 +254,43 @@ const FormSelect = styled.select`
   border: none;
   border-bottom: 1px solid grey;
   background: none;
-  margin-bottom: 10px;
+`;
+const FormSelect2 = styled.select`
+  text-align: start;
+  border: none;
+  border-bottom: 1px solid grey;
+  background: none;
+`;
+const FormSelect3 = styled.select`
+  text-align: start;
+  border: none;
+  border-bottom: 1px solid grey;
+  background: none;
 `;
 const FormOption = styled.option`
   background: #fffaf4;
 `;
+const Buttons = styled.div`
+  text-align: center;
+`;
 const EditFormButton = styled.button`
-  margin-left: 40%;
   padding: 10px;
   box-shadow: 2px 4px 7px #504e4e;
   &:hover {
     border: 2px solid #39d05c;
   }
+  margin: 10px 0px 0px 10px;
+`;
+const ReplaceButton = styled.button`
+  padding: 10px;
+  box-shadow: 2px 4px 7px #504e4e;
+  &:hover {
+    border: 2px solid #39d05c;
+  }
+  margin: 10px 10px 0px 0px;
+`;
+
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

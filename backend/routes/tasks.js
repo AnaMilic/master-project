@@ -6,20 +6,37 @@ const User = require("../models/User");
 
 router.get("/", (req, res) => {
   Task.find({})
-    .then((task) => res.status(200).json(task))
+    .populate("userTester")
+    .populate("userDeveloper")
+    .then((task) => {
+      res.status(200).json(task);
+      console.log(task);
+    })
     .catch((error) => res.status(400).json(error));
 });
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
   const user = req.body.user;
   const email = user.email;
   const task = req.body.task;
 
   const dbUser = await User.findOne({ email });
+  console.log(task);
+  console.log(req.body.userDeveloper);
+  console.log(req.body.userTester);
 
   const newTask = new Task({ ...task });
   newTask.title = task.title;
   newTask.description = task.description;
+  newTask.type = task.taskType;
+  newTask.priority = task.priority;
+  newTask.userDeveloper = await User.findOne({
+    username: req.body.userDeveloper,
+  });
+  newTask.userTester = await User.findOne({
+    username: req.body.userTester,
+  });
   newTask.userId = dbUser;
 
   newTask

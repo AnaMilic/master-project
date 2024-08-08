@@ -10,10 +10,30 @@ const TaskSchema = new Schema({
   description: {
     type: String,
   },
+  type: {
+    type: String, //bug, change, new feature, other
+    required: true,
+    default: "new feature",
+  },
+  priority: {
+    type: String, //1,2,3,4,5
+    required: true,
+    default: "1",
+  },
   status: {
     type: String,
     required: true,
     default: "todo",
+  },
+  userDeveloper: {
+    type: Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  userTester: {
+    type: Schema.Types.ObjectId,
+    ref: User,
+    required: true,
   },
   userId: {
     type: Schema.Types.ObjectId,

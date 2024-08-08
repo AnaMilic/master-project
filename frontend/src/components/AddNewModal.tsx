@@ -17,14 +17,20 @@ const AddNewModal = forwardRef(
     const [users, setUsers] = useState<User[]>([]);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [taskType, setTaskType] = useState("");
+    const [priority, setPriority] = useState("");
+    const [userDeveloper, setUserDeveloper] = useState("");
+    const [userTester, setUserTester] = useState("");
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
         .then((response) => response.json())
-        .then((data) => {
+        .then((data: User[]) => {
           setUsers(data);
-          console.log(data);
-          console.log(users);
+          setTaskType("new feature");
+          setPriority("1");
+          setUserDeveloper(data[0].username);
+          setUserTester(data[0].username);
         });
     }, []);
 
@@ -39,7 +45,11 @@ const AddNewModal = forwardRef(
           task: {
             title,
             description,
+            taskType,
+            priority,
           },
+          userDeveloper,
+          userTester,
           user,
         });
         if (!reqBody) return;
@@ -90,8 +100,34 @@ const AddNewModal = forwardRef(
             onChange={(event) => setDescription(event.target.value)}
           ></FormTextArea>
           <br />
+          <label htmlFor="taskType">Type: </label>
+          <FormSelect2
+            name="taskType"
+            onChange={(event) => setTaskType(event.target.value)}
+          >
+            <FormOption value="new feature">New feature</FormOption>
+            <FormOption value="change">Change</FormOption>
+            <FormOption value="bug">Bug</FormOption>
+            <FormOption value="other">Other</FormOption>
+          </FormSelect2>
+
+          <label htmlFor="priority">Priority: </label>
+          <FormSelect3
+            name="priority"
+            onChange={(event) => setPriority(event.target.value)}
+          >
+            <FormOption value="1">1</FormOption>
+            <FormOption value="2">2</FormOption>
+            <FormOption value="3">3</FormOption>
+            <FormOption value="4">4</FormOption>
+            <FormOption value="5">5</FormOption>
+          </FormSelect3>
+          <br />
           <label htmlFor="developer">Developer: </label>
-          <FormSelect name="developer">
+          <FormSelect
+            name="developer"
+            onChange={(event) => setUserDeveloper(event.target.value)}
+          >
             {users.map(({ username, _id }) => (
               <FormOption value={username} key={_id}>
                 {username}
@@ -100,7 +136,11 @@ const AddNewModal = forwardRef(
           </FormSelect>
           <br />
           <label htmlFor="tester">Tester: </label>
-          <FormSelect name="tester">
+          <FormSelect
+            name="tester"
+            value={userTester}
+            onChange={(event) => setUserTester(event.target.value)}
+          >
             {users.map(({ username, _id }) => (
               <FormOption value={username} key={_id}>
                 {username}
@@ -162,6 +202,22 @@ const FormTextArea = styled.textarea`
 `;
 const FormSelect = styled.select`
   width: 100%;
+  text-align: start;
+  border: none;
+  border-bottom: 1px solid grey;
+  background: none;
+  margin-bottom: 10px;
+`;
+const FormSelect2 = styled.select`
+  width: 45%;
+  text-align: start;
+  border: none;
+  border-bottom: 1px solid grey;
+  background: none;
+  margin-bottom: 10px;
+`;
+const FormSelect3 = styled.select`
+  width: 30%;
   text-align: start;
   border: none;
   border-bottom: 1px solid grey;
