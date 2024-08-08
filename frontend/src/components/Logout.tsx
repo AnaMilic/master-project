@@ -24,7 +24,6 @@ const LogoutButton = styled.button`
   right: 1vw;
   border: 1px solid grey;
   box-shadow: 2px 3px 5px #504e4e;
-  width: 7vw;
   &:hover {
     border: 2px solid #39d05c;
   }

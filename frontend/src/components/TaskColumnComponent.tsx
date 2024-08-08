@@ -8,15 +8,23 @@ const TaskColumnComponent = forwardRef(
       onDragOver,
       onDrop,
       children,
+      borderTopColor,
     }: {
       id: string;
       onDragOver: React.DragEventHandler<HTMLDivElement>;
       onDrop: React.DragEventHandler<HTMLDivElement>;
       children: React.ReactNode;
+      borderTopColor: string;
     },
     ref: React.ForwardedRef<HTMLDivElement>
   ) => (
-    <TaskColumn ref={ref} id={id} onDragOver={onDragOver} onDrop={onDrop}>
+    <TaskColumn
+      ref={ref}
+      id={id}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      style={{ borderTopColor }}
+    >
       {children}
     </TaskColumn>
   )
@@ -33,4 +41,6 @@ const TaskColumn = styled.div`
   border-top-style: outset;
   border-top-width: 10px;
   margin: 2%;
+  overflow-y: scroll;
+  scrollbar-width: none;
 `;
