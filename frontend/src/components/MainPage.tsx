@@ -7,6 +7,7 @@ import TaskColumnComponent from "./TaskColumnComponent";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Task } from "../types/Task";
+import DateTime from "./DateTime";
 
 function MainPage() {
   const url = "http://localhost:5050/api/tasks/";
@@ -28,7 +29,6 @@ function MainPage() {
 
   const editModalRef = useRef(null);
   const addModalRef = useRef(null);
-  //const [editingTask, setEditingTask]=useState(null);
 
   const getTasks = () => {
     return axios
@@ -62,7 +62,6 @@ function MainPage() {
         });
       })
       .catch((error) => {
-        console.log(error);
         alert(error);
       });
   };
@@ -76,9 +75,6 @@ function MainPage() {
   function drop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
     const id = event.dataTransfer.getData("text");
-    /*event.currentTarget.appendChild(document.getElementById(id) as HTMLElement);
-    console.log(id);*/
-
     const task = tasks.find((t) => t._id === id);
     let status = "";
     const oldStatus = task!.status;
@@ -200,7 +196,6 @@ function MainPage() {
       .finally(() => setEditModalData(null));
   }
   function deleteTask(task: Task) {
-    console.log(task);
     try {
       axios
         .delete("http://localhost:5050/api/tasks", {
@@ -239,7 +234,6 @@ function MainPage() {
           alert("Task is successfully deleted.");
         });
     } catch (error) {
-      console.log(error);
       alert(`Deleting task failed. Error: ${error}`);
     }
   }
@@ -264,52 +258,81 @@ function MainPage() {
       window.removeEventListener("click", outsideModalClick);
     };
   }, []);
-
   return (
     <>
+      <DateTime />
+
+      <Logout />
+      <AddNewButton onClick={() => setIsAddModalVisible(true)}>
+        Add new task
+      </AddNewButton>
+
+      {isAddModalVisible && (
+        <AddNewModal
+          onAddTask={(task: Task) => {
+            setTodoTasks((oldState) => [...oldState, task]);
+            setIsAddModalVisible(false);
+          }}
+          onClose={() => setIsAddModalVisible(false)}
+          ref={addModalRef}
+        />
+      )}
+
       {editModalData && (
         <EditModal
           data={editModalData}
-          setEditingTask={setEditModalData}
           onClose={() => setEditModalData(null)}
           ref={editModalRef}
         />
       )}
+
       <MainPageFragment>
         <TaskColumnComponent
           id="todoColumn"
           onDragOver={(event) => allowDrop(event)}
           onDrop={(event) => drop(event)}
+          borderTopColor="#ff5659"
           ref={todoColRef}
         >
-          to do ({todoTasks.length})
-          {todoTasks.map((task) => {
-            return (
-              <TaskCardComponent
-                key={Math.random() * Date.now()}
-                id={task._id}
-                title={task.title}
-                description={task.description}
-                onDragStart={(event) => {
-                  drag(event);
-                }}
-                onEditClick={() => setEditModalData(task)}
-                onDeleteClick={() => {
-                  if (!confirm("Are you sure you want to delete this task?"))
-                    return;
-                  else deleteTask(task);
-                }}
-              />
-            );
-          })}
+          <strong style={{ fontSize: "large", padding: "5px" }}>
+            To do ({todoTasks.length})
+          </strong>
+          <div>
+            {todoTasks.map((task) => {
+              return (
+                <TaskCardComponent
+                  key={Math.random() * Date.now()}
+                  id={task._id}
+                  title={task.title}
+                  description={task.description}
+                  taskType={task.type}
+                  priority={task.priority}
+                  userDeveloper={task.userDeveloper}
+                  userTester={task.userTester}
+                  onDragStart={(event) => {
+                    drag(event);
+                  }}
+                  onEditClick={() => setEditModalData(task)}
+                  onDeleteClick={() => {
+                    if (!confirm("Are you sure you want to delete this task?"))
+                      return;
+                    else deleteTask(task);
+                  }}
+                />
+              );
+            })}
+          </div>
         </TaskColumnComponent>
         <TaskColumnComponent
           id="doingColumn"
           onDragOver={(event) => allowDrop(event)}
           onDrop={(event) => drop(event)}
+          borderTopColor="#ffff80"
           ref={doingColRef}
         >
-          doing ({doingTasks.length})
+          <strong style={{ fontSize: "large", padding: "5px" }}>
+            In progress ({doingTasks.length})
+          </strong>
           {doingTasks.map((task) => {
             return (
               <TaskCardComponent
@@ -317,33 +340,10 @@ function MainPage() {
                 id={task._id}
                 title={task.title}
                 description={task.description}
-                onDragStart={(event) => {
-                  drag(event);
-                }}
-                onEditClick={() => setEditModalData(task)}
-                onDeleteClick={() => {
-                  if (!confirm("Are you sure you want to delete this task?"))
-                    return;
-                  else deleteTask(task);
-                }}
-              />
-            );
-          })}
-        </TaskColumnComponent>
-        <TaskColumnComponent
-          id="doneColumn"
-          onDragOver={(event) => allowDrop(event)}
-          onDrop={(event) => drop(event)}
-          ref={doneColRef}
-        >
-          done ({doneTasks.length})
-          {doneTasks.map((task) => {
-            return (
-              <TaskCardComponent
-                key={Math.random() * Date.now()}
-                id={task._id}
-                title={task.title}
-                description={task.description}
+                taskType={task.type}
+                priority={task.priority}
+                userDeveloper={task.userDeveloper}
+                userTester={task.userTester}
                 onDragStart={(event) => {
                   drag(event);
                 }}
@@ -361,9 +361,12 @@ function MainPage() {
           id="testingColumn"
           onDragOver={(event) => allowDrop(event)}
           onDrop={(event) => drop(event)}
+          borderTopColor="#99c7ff"
           ref={testingColRef}
         >
-          testing ({testingTasks.length})
+          <strong style={{ fontSize: "large", padding: "5px" }}>
+            Testing ({testingTasks.length})
+          </strong>
           {testingTasks.map((task) => {
             return (
               <TaskCardComponent
@@ -371,6 +374,44 @@ function MainPage() {
                 id={task._id}
                 title={task.title}
                 description={task.description}
+                taskType={task.type}
+                priority={task.priority}
+                userDeveloper={task.userDeveloper}
+                userTester={task.userTester}
+                onDragStart={(event) => {
+                  drag(event);
+                }}
+                onEditClick={() => setEditModalData(task)}
+                onDeleteClick={() => {
+                  if (!confirm("Are you sure you want to delete this task?"))
+                    return;
+                  else deleteTask(task);
+                }}
+              />
+            );
+          })}
+        </TaskColumnComponent>
+        <TaskColumnComponent
+          id="doneColumn"
+          onDragOver={(event) => allowDrop(event)}
+          onDrop={(event) => drop(event)}
+          borderTopColor="#99ff99"
+          ref={doneColRef}
+        >
+          <strong style={{ fontSize: "large", padding: "5px" }}>
+            Done ({doneTasks.length})
+          </strong>
+          {doneTasks.map((task) => {
+            return (
+              <TaskCardComponent
+                key={Math.random() * Date.now()}
+                id={task._id}
+                title={task.title}
+                description={task.description}
+                taskType={task.type}
+                priority={task.priority}
+                userDeveloper={task.userDeveloper}
+                userTester={task.userTester}
                 onDragStart={(event) => {
                   drag(event);
                 }}
@@ -385,20 +426,6 @@ function MainPage() {
           })}
         </TaskColumnComponent>
       </MainPageFragment>
-      <Logout />
-      <AddNewButton onClick={() => setIsAddModalVisible(true)}>
-        Add new task
-      </AddNewButton>
-      {isAddModalVisible && (
-        <AddNewModal
-          onAddTask={(task: Task) => {
-            setTodoTasks((oldState) => [...oldState, task]);
-            setIsAddModalVisible(false);
-          }}
-          onClose={() => setIsAddModalVisible(false)}
-          ref={addModalRef}
-        />
-      )}
     </>
   );
 }
@@ -406,10 +433,10 @@ function MainPage() {
 export default MainPage;
 
 const MainPageFragment = styled.div`
-  width: 96vw;
-  height: 96vh;
+  width: 94vw;
+  height: 90vh;
   background: white;
-  margin: 2vh 2vw;
+  margin: 2vh 3vw;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
@@ -419,12 +446,11 @@ const MainPageFragment = styled.div`
 const AddNewButton = styled.button`
   background-color: #f9f0e4;
   position: fixed;
-  top: 7vh;
-  right: 1vw;
+  top: 1vh;
+  right: 8vw;
   border: 1px solid grey;
   box-shadow: 2px 3px 5px #504e4e;
   &:hover {
     border: 2px solid #39d05c;
   }
-  width: 7vw;
 `;
