@@ -9,6 +9,8 @@ export type Task={
     status: string,
     userDeveloper:User,
     userTester:User,
+    userDeveloper2:User,
+    userTester2:User,
     userId: string
 };
 

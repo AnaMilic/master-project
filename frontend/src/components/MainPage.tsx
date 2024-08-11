@@ -261,22 +261,18 @@ function MainPage() {
   return (
     <>
       <DateTime />
-
-      <Logout />
       <AddNewButton onClick={() => setIsAddModalVisible(true)}>
         Add new task
       </AddNewButton>
+      <Logout />
 
       {isAddModalVisible && (
         <AddNewModal
+          todoTasks={todoTasks}
           onAddTask={(task: Task) => {
-            if (todoTasks.length < 3) {
-              setTodoTasks((oldState) => [...oldState, task]);
-              setIsAddModalVisible(false);
-            } else {
-              alert("Vise od 3 taska. ne moze novi");
-              return;
-            }
+            console.log({ task });
+            setTodoTasks((oldState) => [...oldState, task]);
+            setIsAddModalVisible(false);
           }}
           onClose={() => setIsAddModalVisible(false)}
           ref={addModalRef}
@@ -314,6 +310,8 @@ function MainPage() {
                   priority={task.priority}
                   userDeveloper={task.userDeveloper}
                   userTester={task.userTester}
+                  userDeveloper2={task.userDeveloper2}
+                  userTester2={task.userTester2}
                   onDragStart={(event) => {
                     drag(event);
                   }}
@@ -349,6 +347,8 @@ function MainPage() {
                 priority={task.priority}
                 userDeveloper={task.userDeveloper}
                 userTester={task.userTester}
+                userDeveloper2={task.userDeveloper2}
+                userTester2={task.userTester2}
                 onDragStart={(event) => {
                   drag(event);
                 }}
@@ -383,6 +383,8 @@ function MainPage() {
                 priority={task.priority}
                 userDeveloper={task.userDeveloper}
                 userTester={task.userTester}
+                userDeveloper2={task.userDeveloper2}
+                userTester2={task.userTester2}
                 onDragStart={(event) => {
                   drag(event);
                 }}
@@ -417,6 +419,8 @@ function MainPage() {
                 priority={task.priority}
                 userDeveloper={task.userDeveloper}
                 userTester={task.userTester}
+                userDeveloper2={task.userDeveloper2}
+                userTester2={task.userTester2}
                 onDragStart={(event) => {
                   drag(event);
                 }}

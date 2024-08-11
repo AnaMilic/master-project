@@ -35,6 +35,16 @@ const TaskSchema = new Schema({
     ref: User,
     required: true,
   },
+  userDeveloper2: {
+    type: Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  userTester2: {
+    type: Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: User,

@@ -20,6 +20,8 @@ const TaskCardComponent = ({
   priority,
   userDeveloper,
   userTester,
+  userDeveloper2,
+  userTester2,
   onDragStart,
   onEditClick,
   onDeleteClick,
@@ -31,6 +33,8 @@ const TaskCardComponent = ({
   priority: string;
   userDeveloper: User;
   userTester: User;
+  userDeveloper2: User;
+  userTester2: User;
   onDragStart: React.DragEventHandler<HTMLDivElement>;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -79,7 +83,6 @@ const TaskCardComponent = ({
 
   return (
     <TaskCard id={id} draggable="true" onDragStart={onDragStart}>
-      {/*<StyledSpan>Title: </StyledSpan>*/}
       <strong style={{ textDecoration: "underline", fontSize: "large" }}>
         {title}
       </strong>
@@ -105,12 +108,17 @@ const TaskCardComponent = ({
       <span> {priority} </span>
       <span>{renderIcon()}</span>
       <br />
-      <StyledSpan>Developer: </StyledSpan>
+      <StyledSpan>First developer: </StyledSpan>
       <span>{userDeveloper.username}</span>
       <br />
-      <StyledSpan>Tester: </StyledSpan>
+      <StyledSpan>Second developer: </StyledSpan>
+      <span>{userDeveloper2.username}</span>
+      <br />
+      <StyledSpan>First tester: </StyledSpan>
       <span>{userTester.username}</span>
-
+      <br />
+      <StyledSpan>Second tester: </StyledSpan>
+      <span>{userTester2.username}</span>
       <Buttons>
         <EditTaskButton onClick={onEditClick}>
           <FontAwesomeIcon icon={faEdit} />

@@ -22,6 +22,8 @@ const EditModal = forwardRef(
     const [priority, setPriority] = useState(data.priority);
     const [userDeveloper, setUserDeveloper] = useState(data.userDeveloper);
     const [userTester, setUserTester] = useState(data.userTester);
+    const [userDeveloper2, setUserDeveloper2] = useState(data.userDeveloper2);
+    const [userTester2, setUserTester2] = useState(data.userTester2);
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
@@ -45,6 +47,8 @@ const EditModal = forwardRef(
             priority,
             userDeveloper,
             userTester,
+            userDeveloper2,
+            userTester2,
           },
         })
         .then((response) => {
@@ -70,6 +74,8 @@ const EditModal = forwardRef(
             priority,
             userDeveloper: userTester,
             userTester: userDeveloper,
+            userDeveloper2: userTester2,
+            userTester2: userDeveloper2,
           },
         })
         .then((response) => {
@@ -93,7 +99,9 @@ const EditModal = forwardRef(
           }}
         >
           <FlexColumn>
-            <label htmlFor="title">Title:</label>
+            <label htmlFor="title" style={{ color: "#483f3f" }}>
+              <b>Title:</b>
+            </label>
             <FormInput
               type="text"
               name="title"
@@ -103,7 +111,9 @@ const EditModal = forwardRef(
             />
           </FlexColumn>
           <FlexColumn>
-            <label htmlFor="description">Description: </label>
+            <label htmlFor="description" style={{ color: "#483f3f" }}>
+              <b>Description:</b>
+            </label>
             <FormTextArea
               name="description"
               required
@@ -120,7 +130,9 @@ const EditModal = forwardRef(
             }}
           >
             <FlexColumn>
-              <label htmlFor="taskType">Type:</label>
+              <label htmlFor="taskType" style={{ color: "#483f3f" }}>
+                <b>Type:</b>
+              </label>
               <FormSelect
                 name="taskType"
                 value={taskType}
@@ -133,7 +145,9 @@ const EditModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="priority">Priority:</label>
+              <label htmlFor="priority" style={{ color: "#483f3f" }}>
+                <b>Priority:</b>
+              </label>
               <FormSelect
                 name="priority"
                 value={priority}
@@ -148,41 +162,101 @@ const EditModal = forwardRef(
             </FlexColumn>
           </div>
 
-          <div>
-            <label htmlFor="developer">Developer: </label>
-            <FormSelect
-              name="developer"
-              value={userDeveloper._id}
-              onChange={(event) =>
-                setUserDeveloper(
-                  users.find((usr) => usr._id === event.target.value)!
-                )
-              }
-            >
-              {users.map(({ username, _id }) => (
-                <FormOption value={_id} key={_id}>
-                  {username}
-                </FormOption>
-              ))}
-            </FormSelect>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <FlexColumn>
+              <label htmlFor="developer" style={{ color: "#483f3f" }}>
+                <b>First developer: </b>
+              </label>
+              <FormSelect
+                name="developer"
+                value={userDeveloper._id}
+                onChange={(event) =>
+                  setUserDeveloper(
+                    users.find((usr) => usr._id === event.target.value)!
+                  )
+                }
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={_id} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="tester" style={{ color: "#483f3f" }}>
+                <b>First tester: </b>
+              </label>
+              <FormSelect
+                name="tester"
+                value={userTester._id}
+                onChange={(event) =>
+                  setUserTester(
+                    users.find((usr) => usr._id === event.target.value)!
+                  )
+                }
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={_id} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
           </div>
-          <div>
-            <label htmlFor="tester">Tester: </label>
-            <FormSelect
-              name="tester"
-              value={userTester._id}
-              onChange={(event) =>
-                setUserTester(
-                  users.find((usr) => usr._id === event.target.value)!
-                )
-              }
-            >
-              {users.map(({ username, _id }) => (
-                <FormOption value={_id} key={_id}>
-                  {username}
-                </FormOption>
-              ))}
-            </FormSelect>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <FlexColumn>
+              <label htmlFor="developer2" style={{ color: "#483f3f" }}>
+                <b>Second developer: </b>
+              </label>
+              <FormSelect
+                name="developer2"
+                value={userDeveloper2._id}
+                onChange={(event) =>
+                  setUserDeveloper2(
+                    users.find((usr) => usr._id === event.target.value)!
+                  )
+                }
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={_id} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="tester2" style={{ color: "#483f3f" }}>
+                <b>Second tester: </b>
+              </label>
+              <FormSelect
+                name="tester2"
+                value={userTester2._id}
+                onChange={(event) =>
+                  setUserTester2(
+                    users.find((usr) => usr._id === event.target.value)!
+                  )
+                }
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={_id} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
           </div>
           <Buttons>
             <ReplaceButton

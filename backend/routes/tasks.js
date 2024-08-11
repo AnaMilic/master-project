@@ -8,6 +8,8 @@ router.get("/", (req, res) => {
   Task.find({})
     .populate("userTester")
     .populate("userDeveloper")
+    .populate("userTester2")
+    .populate("userDeveloper2")
     .then((task) => {
       res.status(200).json(task);
       console.log(task);
@@ -37,11 +39,25 @@ router.post("/", async (req, res) => {
   newTask.userTester = await User.findOne({
     username: req.body.userTester,
   });
+  newTask.userDeveloper2 = await User.findOne({
+    username: req.body.userDeveloper2,
+  });
+  newTask.userTester2 = await User.findOne({
+    username: req.body.userTester2,
+  });
   newTask.userId = dbUser;
 
   newTask
     .save()
-    .then(() => res.status(200).send(newTask))
+    .then(() =>
+      newTask.populate([
+        "userTester",
+        "userDeveloper",
+        "userTester2",
+        "userDeveloper2",
+      ])
+    )
+    .then((populated) => res.status(200).send(populated))
     .catch((error) => res.status(400).send(error));
 });
 

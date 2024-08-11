@@ -6,9 +6,11 @@ import { Task } from "../types/Task";
 const AddNewModal = forwardRef(
   (
     {
+      todoTasks,
       onAddTask,
       onClose,
     }: {
+      todoTasks: Task[];
       onAddTask: (Task: Task) => void;
       onClose: () => void;
     },
@@ -21,6 +23,8 @@ const AddNewModal = forwardRef(
     const [priority, setPriority] = useState("");
     const [userDeveloper, setUserDeveloper] = useState("");
     const [userTester, setUserTester] = useState("");
+    const [userDeveloper2, setUserDeveloper2] = useState("");
+    const [userTester2, setUserTester2] = useState("");
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
@@ -31,12 +35,20 @@ const AddNewModal = forwardRef(
           setPriority("1");
           setUserDeveloper(data[0].username);
           setUserTester(data[0].username);
+          setUserDeveloper2(data[0].username);
+          setUserTester2(data[0].username);
         });
     }, []);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.stopPropagation();
       event.preventDefault();
+      console.log(`duzina taskova ${todoTasks.length}`);
+      if (todoTasks.length >= 3) {
+        console.log("uslo u if");
+        alert("You can't have more than 3 tasks in To do column!");
+        return;
+      }
 
       const user = JSON.parse(localStorage.getItem("user")!).user;
 
@@ -50,6 +62,8 @@ const AddNewModal = forwardRef(
           },
           userDeveloper,
           userTester,
+          userDeveloper2,
+          userTester2,
           user,
         });
         if (!reqBody) return;
@@ -90,7 +104,9 @@ const AddNewModal = forwardRef(
           }}
         >
           <FlexColumn>
-            <label htmlFor="title">Title: </label>
+            <label htmlFor="title" style={{ color: "#483f3f" }}>
+              <b>Title: </b>
+            </label>
             <FormInput
               type="text"
               name="title"
@@ -101,7 +117,9 @@ const AddNewModal = forwardRef(
           </FlexColumn>
 
           <FlexColumn>
-            <label htmlFor="description">Description: </label>
+            <label htmlFor="description" style={{ color: "#483f3f" }}>
+              <b>Description: </b>
+            </label>
             <FormTextArea
               name="description"
               required
@@ -118,7 +136,9 @@ const AddNewModal = forwardRef(
             }}
           >
             <FlexColumn>
-              <label htmlFor="taskType">Type: </label>
+              <label htmlFor="taskType" style={{ color: "#483f3f" }}>
+                <b>Type: </b>
+              </label>
               <FormSelect
                 name="taskType"
                 onChange={(event) => setTaskType(event.target.value)}
@@ -130,7 +150,9 @@ const AddNewModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="priority">Priority: </label>
+              <label htmlFor="priority" style={{ color: "#483f3f" }}>
+                <b>Priority: </b>
+              </label>
               <FormSelect
                 name="priority"
                 onChange={(event) => setPriority(event.target.value)}
@@ -143,35 +165,86 @@ const AddNewModal = forwardRef(
               </FormSelect>
             </FlexColumn>
           </div>
-          <div>
-            <label htmlFor="developer">Developer: </label>
-            <FormSelect
-              name="developer"
-              onChange={(event) => setUserDeveloper(event.target.value)}
-            >
-              {users.map(({ username, _id }) => (
-                <FormOption value={username} key={_id}>
-                  {username}
-                </FormOption>
-              ))}
-            </FormSelect>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <FlexColumn>
+              <label htmlFor="developer" style={{ color: "#483f3f" }}>
+                <b>First developer: </b>
+              </label>
+              <FormSelect
+                name="developer"
+                value={userDeveloper}
+                onChange={(event) => setUserDeveloper(event.target.value)}
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={username} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="tester" style={{ color: "#483f3f" }}>
+                <b>First tester: </b>
+              </label>
+              <FormSelect
+                name="tester"
+                value={userTester}
+                onChange={(event) => setUserTester(event.target.value)}
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={username} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
           </div>
-
-          <div>
-            <label htmlFor="tester">Tester: </label>
-            <FormSelect
-              name="tester"
-              value={userTester}
-              onChange={(event) => setUserTester(event.target.value)}
-            >
-              {users.map(({ username, _id }) => (
-                <FormOption value={username} key={_id}>
-                  {username}
-                </FormOption>
-              ))}
-            </FormSelect>
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <FlexColumn>
+              <label htmlFor="developer2" style={{ color: "#483f3f" }}>
+                <b>Second developer: </b>
+              </label>
+              <FormSelect
+                name="developer2"
+                value={userDeveloper2}
+                onChange={(event) => setUserDeveloper2(event.target.value)}
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={username} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
+            <FlexColumn>
+              <label htmlFor="tester2" style={{ color: "#483f3f" }}>
+                <b>Second tester: </b>
+              </label>
+              <FormSelect
+                name="tester2"
+                value={userTester2}
+                onChange={(event) => setUserTester2(event.target.value)}
+              >
+                {users.map(({ username, _id }) => (
+                  <FormOption value={username} key={_id}>
+                    {username}
+                  </FormOption>
+                ))}
+              </FormSelect>
+            </FlexColumn>
           </div>
-
           <AddNewTaskFormButton>Add task</AddNewTaskFormButton>
         </form>
       </AddModalElement>
