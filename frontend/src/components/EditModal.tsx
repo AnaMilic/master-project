@@ -24,6 +24,7 @@ const EditModal = forwardRef(
     const [userTester, setUserTester] = useState(data.userTester);
     const [userDeveloper2, setUserDeveloper2] = useState(data.userDeveloper2);
     const [userTester2, setUserTester2] = useState(data.userTester2);
+    const [requiredTime, setRequiredTime] = useState(data.requiredTime);
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
@@ -49,6 +50,7 @@ const EditModal = forwardRef(
             userTester,
             userDeveloper2,
             userTester2,
+            requiredTime,
           },
         })
         .then((response) => {
@@ -76,6 +78,7 @@ const EditModal = forwardRef(
             userTester: userDeveloper,
             userDeveloper2: userTester2,
             userTester2: userDeveloper2,
+            requiredTime,
           },
         })
         .then((response) => {
@@ -91,17 +94,11 @@ const EditModal = forwardRef(
       <EditModalElement open id="editModal" ref={ref}>
         <ModalTitle>Edit your task</ModalTitle>
         <CloseEditModal onClick={onClose}>X</CloseEditModal>
-        <form
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
+        <EditForm>
           <FlexColumn>
-            <label htmlFor="title" style={{ color: "#483f3f" }}>
+            <Label htmlFor="title">
               <b>Title:</b>
-            </label>
+            </Label>
             <FormInput
               type="text"
               name="title"
@@ -111,9 +108,9 @@ const EditModal = forwardRef(
             />
           </FlexColumn>
           <FlexColumn>
-            <label htmlFor="description" style={{ color: "#483f3f" }}>
+            <Label htmlFor="description">
               <b>Description:</b>
-            </label>
+            </Label>
             <FormTextArea
               name="description"
               required
@@ -122,17 +119,11 @@ const EditModal = forwardRef(
               onChange={(event) => setDescription(event.target.value)}
             />
           </FlexColumn>
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          <Container>
             <FlexColumn>
-              <label htmlFor="taskType" style={{ color: "#483f3f" }}>
+              <Label htmlFor="taskType">
                 <b>Type:</b>
-              </label>
+              </Label>
               <FormSelect
                 name="taskType"
                 value={taskType}
@@ -145,9 +136,9 @@ const EditModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="priority" style={{ color: "#483f3f" }}>
+              <Label htmlFor="priority">
                 <b>Priority:</b>
-              </label>
+              </Label>
               <FormSelect
                 name="priority"
                 value={priority}
@@ -160,19 +151,13 @@ const EditModal = forwardRef(
                 <FormOption value="5">5</FormOption>
               </FormSelect>
             </FlexColumn>
-          </div>
+          </Container>
 
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          <Container>
             <FlexColumn>
-              <label htmlFor="developer" style={{ color: "#483f3f" }}>
+              <Label htmlFor="developer">
                 <b>First developer: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="developer"
                 value={userDeveloper._id}
@@ -190,9 +175,9 @@ const EditModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="tester" style={{ color: "#483f3f" }}>
+              <Label htmlFor="tester">
                 <b>First tester: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="tester"
                 value={userTester._id}
@@ -209,18 +194,12 @@ const EditModal = forwardRef(
                 ))}
               </FormSelect>
             </FlexColumn>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          </Container>
+          <Container>
             <FlexColumn>
-              <label htmlFor="developer2" style={{ color: "#483f3f" }}>
+              <Label htmlFor="developer2">
                 <b>Second developer: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="developer2"
                 value={userDeveloper2._id}
@@ -238,9 +217,9 @@ const EditModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="tester2" style={{ color: "#483f3f" }}>
+              <Label htmlFor="tester2">
                 <b>Second tester: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="tester2"
                 value={userTester2._id}
@@ -257,7 +236,20 @@ const EditModal = forwardRef(
                 ))}
               </FormSelect>
             </FlexColumn>
-          </div>
+          </Container>
+          <FlexColumn>
+            <Label htmlFor="requiredTime">
+              <b>Required time to finish(in days):</b>
+            </Label>
+            <FormInput
+              type="number"
+              min={1}
+              name="requiredTime"
+              required
+              value={requiredTime}
+              onChange={(event) => setRequiredTime(event.target.value)}
+            />
+          </FlexColumn>
           <Buttons>
             <ReplaceButton
               onClick={(event) => {
@@ -274,7 +266,7 @@ const EditModal = forwardRef(
               Save changes
             </EditFormButton>
           </Buttons>
-        </form>
+        </EditForm>
       </EditModalElement>
     );
   }
@@ -300,6 +292,11 @@ const CloseEditModal = styled.button`
   &:hover {
     border: 2px solid #39d05c;
   }
+`;
+const EditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 const FormInput = styled.input`
   border: none;
@@ -353,4 +350,13 @@ const ReplaceButton = styled.button`
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
+`;
+const Label = styled.label`
+  color: #483f3f;
+`;
+
+const Container = styled.div`
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
 `;

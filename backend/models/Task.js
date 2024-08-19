@@ -45,6 +45,10 @@ const TaskSchema = new Schema({
     ref: User,
     required: true,
   },
+  requiredTime: {
+    type: String,
+    required: true,
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: User,

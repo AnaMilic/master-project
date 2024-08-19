@@ -295,36 +295,38 @@ function MainPage() {
           borderTopColor="#ff5659"
           ref={todoColRef}
         >
-          <strong style={{ fontSize: "large", padding: "5px" }}>
-            To do ({todoTasks.length})
-          </strong>
-          <div>
-            {todoTasks.map((task) => {
-              return (
-                <TaskCardComponent
-                  key={Math.random() * Date.now()}
-                  id={task._id}
-                  title={task.title}
-                  description={task.description}
-                  taskType={task.type}
-                  priority={task.priority}
-                  userDeveloper={task.userDeveloper}
-                  userTester={task.userTester}
-                  userDeveloper2={task.userDeveloper2}
-                  userTester2={task.userTester2}
-                  onDragStart={(event) => {
-                    drag(event);
-                  }}
-                  onEditClick={() => setEditModalData(task)}
-                  onDeleteClick={() => {
-                    if (!confirm("Are you sure you want to delete this task?"))
-                      return;
-                    else deleteTask(task);
-                  }}
-                />
-              );
-            })}
-          </div>
+          <ColumnTitle>To do ({todoTasks.length})</ColumnTitle>
+
+          {todoTasks.map((task) => {
+            return (
+              <TaskCardComponent
+                key={Math.random() * Date.now()}
+                id={task._id}
+                title={task.title}
+                description={task.description}
+                taskType={task.type}
+                priority={task.priority}
+                userDeveloper={task.userDeveloper}
+                userTester={task.userTester}
+                userDeveloper2={task.userDeveloper2}
+                userTester2={task.userTester2}
+                requiredTime={task.requiredTime}
+                onDragStart={(event) => {
+                  drag(event);
+                }}
+                onEditClick={() => setEditModalData(task)}
+                onDeleteClick={() => {
+                  if (
+                    !confirm(
+                      `Are you sure you want to delete task "${task.title}"?`
+                    )
+                  )
+                    return;
+                  else deleteTask(task);
+                }}
+              />
+            );
+          })}
         </TaskColumnComponent>
         <TaskColumnComponent
           id="doingColumn"
@@ -333,9 +335,7 @@ function MainPage() {
           borderTopColor="#ffff80"
           ref={doingColRef}
         >
-          <strong style={{ fontSize: "large", padding: "5px" }}>
-            In progress ({doingTasks.length})
-          </strong>
+          <ColumnTitle>In progress ({doingTasks.length})</ColumnTitle>
           {doingTasks.map((task) => {
             return (
               <TaskCardComponent
@@ -349,12 +349,17 @@ function MainPage() {
                 userTester={task.userTester}
                 userDeveloper2={task.userDeveloper2}
                 userTester2={task.userTester2}
+                requiredTime={task.requiredTime}
                 onDragStart={(event) => {
                   drag(event);
                 }}
                 onEditClick={() => setEditModalData(task)}
                 onDeleteClick={() => {
-                  if (!confirm("Are you sure you want to delete this task?"))
+                  if (
+                    !confirm(
+                      `Are you sure you want to delete task "${task.title}"?`
+                    )
+                  )
                     return;
                   else deleteTask(task);
                 }}
@@ -369,9 +374,7 @@ function MainPage() {
           borderTopColor="#99c7ff"
           ref={testingColRef}
         >
-          <strong style={{ fontSize: "large", padding: "5px" }}>
-            Testing ({testingTasks.length})
-          </strong>
+          <ColumnTitle>Testing ({testingTasks.length})</ColumnTitle>
           {testingTasks.map((task) => {
             return (
               <TaskCardComponent
@@ -385,12 +388,17 @@ function MainPage() {
                 userTester={task.userTester}
                 userDeveloper2={task.userDeveloper2}
                 userTester2={task.userTester2}
+                requiredTime={task.requiredTime}
                 onDragStart={(event) => {
                   drag(event);
                 }}
                 onEditClick={() => setEditModalData(task)}
                 onDeleteClick={() => {
-                  if (!confirm("Are you sure you want to delete this task?"))
+                  if (
+                    !confirm(
+                      `Are you sure you want to delete task "${task.title}"?`
+                    )
+                  )
                     return;
                   else deleteTask(task);
                 }}
@@ -405,9 +413,7 @@ function MainPage() {
           borderTopColor="#99ff99"
           ref={doneColRef}
         >
-          <strong style={{ fontSize: "large", padding: "5px" }}>
-            Done ({doneTasks.length})
-          </strong>
+          <ColumnTitle>Done ({doneTasks.length})</ColumnTitle>
           {doneTasks.map((task) => {
             return (
               <TaskCardComponent
@@ -421,12 +427,17 @@ function MainPage() {
                 userTester={task.userTester}
                 userDeveloper2={task.userDeveloper2}
                 userTester2={task.userTester2}
+                requiredTime={task.requiredTime}
                 onDragStart={(event) => {
                   drag(event);
                 }}
                 onEditClick={() => setEditModalData(task)}
                 onDeleteClick={() => {
-                  if (!confirm("Are you sure you want to delete this task?"))
+                  if (
+                    !confirm(
+                      `Are you sure you want to delete task "${task.title}"?`
+                    )
+                  )
                     return;
                   else deleteTask(task);
                 }}
@@ -462,4 +473,14 @@ const AddNewButton = styled.button`
   &:hover {
     border: 2px solid #39d05c;
   }
+`;
+
+const ColumnTitle = styled.div`
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background: #f2e8c4;
+  font-size: large;
+  padding: 2px 5px;
+  font-weight: bold;
 `;

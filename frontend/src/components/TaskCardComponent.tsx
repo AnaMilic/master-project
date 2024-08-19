@@ -22,6 +22,7 @@ const TaskCardComponent = ({
   userTester,
   userDeveloper2,
   userTester2,
+  requiredTime,
   onDragStart,
   onEditClick,
   onDeleteClick,
@@ -35,6 +36,7 @@ const TaskCardComponent = ({
   userTester: User;
   userDeveloper2: User;
   userTester2: User;
+  requiredTime: string;
   onDragStart: React.DragEventHandler<HTMLDivElement>;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -83,9 +85,7 @@ const TaskCardComponent = ({
 
   return (
     <TaskCard id={id} draggable="true" onDragStart={onDragStart}>
-      <strong style={{ textDecoration: "underline", fontSize: "large" }}>
-        {title}
-      </strong>
+      <TaskTitle>{title}</TaskTitle>
       <br />
       <StyledSpan>Description: </StyledSpan>
       <span>{description}</span>
@@ -119,6 +119,11 @@ const TaskCardComponent = ({
       <br />
       <StyledSpan>Second tester: </StyledSpan>
       <span>{userTester2.username}</span>
+      <br />
+      <StyledSpan>Required time to finish: </StyledSpan>
+      <span>
+        {requiredTime === "1" ? requiredTime + " day" : requiredTime + " days"}
+      </span>
       <Buttons>
         <EditTaskButton onClick={onEditClick}>
           <FontAwesomeIcon icon={faEdit} />
@@ -174,4 +179,9 @@ const StyledSpan = styled.span`
 `;
 const Buttons = styled.div`
   text-align: right;
+`;
+const TaskTitle = styled.span`
+  text-decoration: underline;
+  font-size: larger;
+  font-weight: bold;
 `;

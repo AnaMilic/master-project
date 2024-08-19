@@ -19,14 +19,15 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   console.log(req.body);
-  const user = req.body.user;
-  const email = user.email;
+
+  const email = req.body.user;
+  //console.log(userId);
   const task = req.body.task;
 
   const dbUser = await User.findOne({ email });
-  console.log(task);
-  console.log(req.body.userDeveloper);
-  console.log(req.body.userTester);
+  //console.log(task);
+  //console.log(req.body.userDeveloper);
+  //console.log(req.body.userTester);
 
   const newTask = new Task({ ...task });
   newTask.title = task.title;
@@ -45,6 +46,7 @@ router.post("/", async (req, res) => {
   newTask.userTester2 = await User.findOne({
     username: req.body.userTester2,
   });
+  newTask.requiredTime = task.requiredTime;
   newTask.userId = dbUser;
 
   newTask

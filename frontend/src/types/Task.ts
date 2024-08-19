@@ -11,6 +11,7 @@ export type Task={
     userTester:User,
     userDeveloper2:User,
     userTester2:User,
+    requiredTime: string,
     userId: string
 };
 

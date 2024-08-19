@@ -25,6 +25,7 @@ const AddNewModal = forwardRef(
     const [userTester, setUserTester] = useState("");
     const [userDeveloper2, setUserDeveloper2] = useState("");
     const [userTester2, setUserTester2] = useState("");
+    const [requiredTime, setRequiredTime] = useState("");
 
     useEffect(() => {
       fetch("http://localhost:5050/api/users")
@@ -37,6 +38,7 @@ const AddNewModal = forwardRef(
           setUserTester(data[0].username);
           setUserDeveloper2(data[0].username);
           setUserTester2(data[0].username);
+          setRequiredTime("1");
         });
     }, []);
 
@@ -44,14 +46,14 @@ const AddNewModal = forwardRef(
       event.stopPropagation();
       event.preventDefault();
       console.log(`duzina taskova ${todoTasks.length}`);
-      if (todoTasks.length >= 3) {
+      if (todoTasks.length >= 7) {
         console.log("uslo u if");
-        alert("You can't have more than 3 tasks in To do column!");
+        alert("You can't have more than 7 tasks in To do column!");
         return;
       }
 
-      const user = JSON.parse(localStorage.getItem("user")!).user;
-
+      const user = JSON.parse(localStorage.getItem("user")!).email;
+      console.log("user:" + user);
       try {
         const reqBody = JSON.stringify({
           task: {
@@ -59,6 +61,7 @@ const AddNewModal = forwardRef(
             description,
             taskType,
             priority,
+            requiredTime,
           },
           userDeveloper,
           userTester,
@@ -95,18 +98,11 @@ const AddNewModal = forwardRef(
       <AddModalElement open id="addModal" ref={ref}>
         <ModalTitle>Create new task</ModalTitle>
         <CloseAddModal onClick={onClose}>X</CloseAddModal>
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
+        <AddForm onSubmit={handleSubmit}>
           <FlexColumn>
-            <label htmlFor="title" style={{ color: "#483f3f" }}>
+            <Label htmlFor="title">
               <b>Title: </b>
-            </label>
+            </Label>
             <FormInput
               type="text"
               name="title"
@@ -117,9 +113,9 @@ const AddNewModal = forwardRef(
           </FlexColumn>
 
           <FlexColumn>
-            <label htmlFor="description" style={{ color: "#483f3f" }}>
+            <Label htmlFor="description">
               <b>Description: </b>
-            </label>
+            </Label>
             <FormTextArea
               name="description"
               required
@@ -128,17 +124,11 @@ const AddNewModal = forwardRef(
               onChange={(event) => setDescription(event.target.value)}
             ></FormTextArea>
           </FlexColumn>
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          <Container>
             <FlexColumn>
-              <label htmlFor="taskType" style={{ color: "#483f3f" }}>
+              <Label htmlFor="taskType">
                 <b>Type: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="taskType"
                 onChange={(event) => setTaskType(event.target.value)}
@@ -150,9 +140,9 @@ const AddNewModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="priority" style={{ color: "#483f3f" }}>
+              <Label htmlFor="priority">
                 <b>Priority: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="priority"
                 onChange={(event) => setPriority(event.target.value)}
@@ -164,18 +154,12 @@ const AddNewModal = forwardRef(
                 <FormOption value="5">5</FormOption>
               </FormSelect>
             </FlexColumn>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          </Container>
+          <Container>
             <FlexColumn>
-              <label htmlFor="developer" style={{ color: "#483f3f" }}>
+              <Label htmlFor="developer">
                 <b>First developer: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="developer"
                 value={userDeveloper}
@@ -189,9 +173,9 @@ const AddNewModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="tester" style={{ color: "#483f3f" }}>
+              <Label htmlFor="tester">
                 <b>First tester: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="tester"
                 value={userTester}
@@ -204,18 +188,12 @@ const AddNewModal = forwardRef(
                 ))}
               </FormSelect>
             </FlexColumn>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gap: "20px",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+          </Container>
+          <Container>
             <FlexColumn>
-              <label htmlFor="developer2" style={{ color: "#483f3f" }}>
+              <Label htmlFor="developer2">
                 <b>Second developer: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="developer2"
                 value={userDeveloper2}
@@ -229,9 +207,9 @@ const AddNewModal = forwardRef(
               </FormSelect>
             </FlexColumn>
             <FlexColumn>
-              <label htmlFor="tester2" style={{ color: "#483f3f" }}>
+              <Label htmlFor="tester2">
                 <b>Second tester: </b>
-              </label>
+              </Label>
               <FormSelect
                 name="tester2"
                 value={userTester2}
@@ -244,9 +222,21 @@ const AddNewModal = forwardRef(
                 ))}
               </FormSelect>
             </FlexColumn>
-          </div>
+          </Container>
+          <FlexColumn>
+            <Label htmlFor="requiredTime">
+              <b>Required time (in days): </b>
+            </Label>
+            <FormInput
+              type="number"
+              name="requiredTime"
+              required
+              value={requiredTime}
+              onChange={(event) => setRequiredTime(event.target.value)}
+            ></FormInput>
+          </FlexColumn>
           <AddNewTaskFormButton>Add task</AddNewTaskFormButton>
-        </form>
+        </AddForm>
       </AddModalElement>
     );
   }
@@ -280,6 +270,11 @@ const ModalTitle = styled.h3`
   font-weight: 500;
   text-shadow: 1px 2px 3px #504e4e;
 `;
+const AddForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 const FormInput = styled.input`
   border: none;
   border-bottom: 1px solid grey;
@@ -312,4 +307,14 @@ const AddNewTaskFormButton = styled.button`
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const Label = styled.label`
+  color: #483f3f;
+`;
+
+const Container = styled.div`
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
 `;

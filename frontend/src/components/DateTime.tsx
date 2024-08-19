@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 function DateTime() {
+  const userLogined = JSON.parse(localStorage.getItem("user")!);
+
   const [date, setDate] = useState(new Date());
   const month = date.getMonth() + 1;
 
@@ -47,19 +49,20 @@ function DateTime() {
     <>
       <DateTimeDiv>
         <SpanFormat>
-          <FontAwesomeIcon icon={faCalendarDays} />{" "}
+          <FontAwesomeIcon icon={faCalendarDays} />
           {date.getDate() + "/" + month + "/" + date.getFullYear()}
         </SpanFormat>
         <br />
         <SpanFormat>
-          <FontAwesomeIcon icon={faClock} />{" "}
+          <FontAwesomeIcon icon={faClock} />
           {date.toTimeString().substring(0, 8)}
         </SpanFormat>
       </DateTimeDiv>
       <DailyNotificationDiv>
-        You have daily meeting at 10!
+        Hello, {userLogined.username}!
         <br />
-        Time left: {hoursRemaining}:{minutesRemaining}:{secondsRemaining}
+        You have daily meeting at 10! Time left: {hoursRemaining}:
+        {minutesRemaining}:{secondsRemaining}
       </DailyNotificationDiv>
     </>
   );
@@ -78,7 +81,7 @@ const DailyNotificationDiv = styled.div`
   justify-content: center;
   position: fixed;
   top: 0.5vh;
-  right: 50vw;
+  right: 40vw;
   font-size: larger;
   font-weight: bold;
   border-radius: 5px;
@@ -86,4 +89,5 @@ const DailyNotificationDiv = styled.div`
   &:hover {
     border: 2px solid #49ab81;
   }
+  text-align-last: center;
 `;

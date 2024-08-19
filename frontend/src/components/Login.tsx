@@ -31,7 +31,7 @@ function Login() {
       });
       const formattedResponse = await res.json();
       if (res.status === 200) {
-        localStorage.setItem("user", reqBody);
+        localStorage.setItem("user", JSON.stringify(formattedResponse));
         setEmail("");
         setPassword("");
         navigate("/mainPage");
