@@ -30,6 +30,8 @@ function MainPage() {
   const editModalRef = useRef(null);
   const addModalRef = useRef(null);
 
+  const loginedUser = JSON.parse(localStorage.getItem("user")!);
+
   const getTasks = () => {
     return axios
       .get(url)
@@ -67,7 +69,11 @@ function MainPage() {
   };
 
   function drag(event: React.DragEvent<HTMLDivElement>) {
-    event.dataTransfer.setData("text", event.currentTarget.id);
+    if (loginedUser.role === "client") {
+      return;
+    } else {
+      event.dataTransfer.setData("text", event.currentTarget.id);
+    }
   }
   function allowDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
@@ -261,9 +267,11 @@ function MainPage() {
   return (
     <>
       <DateTime />
-      <AddNewButton onClick={() => setIsAddModalVisible(true)}>
-        Add new task
-      </AddNewButton>
+      {loginedUser.role === "developer" && (
+        <AddNewButton onClick={() => setIsAddModalVisible(true)}>
+          Add new task
+        </AddNewButton>
+      )}
       <Logout />
 
       {isAddModalVisible && (

@@ -41,6 +41,9 @@ const TaskCardComponent = ({
   onEditClick: () => void;
   onDeleteClick: () => void;
 }) => {
+  const loginedUser = JSON.parse(localStorage.getItem("user")!);
+  const drag = loginedUser.role === "developer" ? "true" : "false";
+
   const renderIcon = () => {
     switch (priority) {
       case "1":
@@ -84,7 +87,7 @@ const TaskCardComponent = ({
   };
 
   return (
-    <TaskCard id={id} draggable="true" onDragStart={onDragStart}>
+    <TaskCard id={id} draggable={drag} onDragStart={onDragStart}>
       <TaskTitle>{title}</TaskTitle>
       <br />
       <StyledSpan>Description: </StyledSpan>
@@ -124,14 +127,16 @@ const TaskCardComponent = ({
       <span>
         {requiredTime === "1" ? requiredTime + " day" : requiredTime + " days"}
       </span>
-      <Buttons>
-        <EditTaskButton onClick={onEditClick}>
-          <FontAwesomeIcon icon={faEdit} />
-        </EditTaskButton>
-        <DeleteTaskButton onClick={onDeleteClick}>
-          <FontAwesomeIcon icon={faTrashCan} />
-        </DeleteTaskButton>
-      </Buttons>
+      {loginedUser.role === "developer" && (
+        <Buttons>
+          <EditTaskButton onClick={onEditClick}>
+            <FontAwesomeIcon icon={faEdit} />
+          </EditTaskButton>
+          <DeleteTaskButton onClick={onDeleteClick}>
+            <FontAwesomeIcon icon={faTrashCan} />
+          </DeleteTaskButton>
+        </Buttons>
+      )}
     </TaskCard>
   );
 };
