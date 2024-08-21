@@ -45,15 +45,14 @@ const AddNewModal = forwardRef(
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.stopPropagation();
       event.preventDefault();
-      console.log(`duzina taskova ${todoTasks.length}`);
+
       if (todoTasks.length >= 7) {
-        console.log("uslo u if");
         alert("You can't have more than 7 tasks in To do column!");
         return;
       }
 
       const user = JSON.parse(localStorage.getItem("user")!).email;
-      console.log("user:" + user);
+
       try {
         const reqBody = JSON.stringify({
           task: {

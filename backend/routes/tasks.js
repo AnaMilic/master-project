@@ -12,22 +12,15 @@ router.get("/", (req, res) => {
     .populate("userDeveloper2")
     .then((task) => {
       res.status(200).json(task);
-      console.log(task);
     })
     .catch((error) => res.status(400).json(error));
 });
 
 router.post("/", async (req, res) => {
-  console.log(req.body);
-
   const email = req.body.user;
-  //console.log(userId);
   const task = req.body.task;
 
   const dbUser = await User.findOne({ email });
-  //console.log(task);
-  //console.log(req.body.userDeveloper);
-  //console.log(req.body.userTester);
 
   const newTask = new Task({ ...task });
   newTask.title = task.title;
@@ -77,8 +70,16 @@ router.patch("/", (req, res) => {
       }
     )
       .exec()
+      .then((task) =>
+        task.populate([
+          "userTester",
+          "userDeveloper",
+          "userTester2",
+          "userDeveloper2",
+        ])
+      )
       .then((task) => {
-        res.status(200).send(task);
+        return res.status(200).json(task);
       })
       .catch((error) => res.status(400).send(error));
   } catch (error) {

@@ -1,13 +1,11 @@
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 function Logout() {
-  const navigate = useNavigate();
   return (
     <LogoutButton
       onClick={() => {
-        navigate("/");
         localStorage.removeItem("user");
+        window.location.href = "/";
       }}
     >
       Logout
